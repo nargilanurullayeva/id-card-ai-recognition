@@ -20,10 +20,4 @@ This Android app allows users to take a picture of a Turkish ID card (T.C. Kimli
 2. Point the camera at a Turkish ID card (T.C. Kimlik) and capture an image.
 3. Wait for the app to process the image and display the extracted ID card information.
 
-## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
-
-## License
-
-This project is licensed under the MIT License - see the `LICENSE` file for details.
