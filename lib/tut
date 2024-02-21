@@ -1,0 +1,360 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const CameraPage(),
+    );
+  }
+}
+
+Future<Map<String, dynamic>> fetchData() async {
+  final response = await http.get(Uri.parse('http://localhost:5000/data'));
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to load data');
+  }
+}
+
+//// Take Picture
+class CameraPage extends StatefulWidget {
+  const CameraPage({super.key});
+
+  @override
+  State<CameraPage> createState() => _CameraPageState();
+}
+
+class _CameraPageState extends State<CameraPage> {
+  File _image = File("src/tree.jpg");
+  String? baslik;
+  final imagePicker = ImagePicker();
+
+  Future getImage() async {
+    // ignore: deprecated_member_use
+    final image = await imagePicker.getImage(source: ImageSource.camera);
+    setState(() {
+      _image = File(image!.path);
+      //baslik = postData() as String;
+      baslik = "bakalim";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('gelen $baslik'),
+      ),
+      body: Center(
+        child: Image.file(_image),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getImage,
+        backgroundColor: Colors.green,
+        // ignore: prefer_const_constructors
+        child: Icon(Icons.camera_alt),
+      ),
+    );
+  }
+}
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:listview_builder_with_image_and_text/models/catalog.dart';
+
+class ItemWidget extends StatelessWidget {
+  final Item item;
+  const ItemWidget({Key? key, required this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 0,
+        color: Colors.purple.shade100,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            leading: Image.network(item.image,height: 90,width: 90,),
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: Text(item.name,style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 18))),
+            ),
+            subtitle: Center(child: Text(item.desc,style: TextStyle(color: Colors.indigo.shade500, fontWeight: FontWeight.bold,fontSize: 15))),
+            trailing: Text(
+              "\$${item.price}",
+              style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold,fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+Scaffold(
+  body: CustomScrollView(
+    primary: true,
+    slivers: <Widget>[
+      SliverAppBar(
+        title: const Text('Hello World'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            tooltip: 'Open shopping cart',
+            onPressed: () {
+              // handle the press
+            },
+          ),
+        ],
+      ),
+      // ...rest of body...
+    ],
+  ),
+)
+
+
+
+body: SafeArea(
+          child: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            color: AppColors.blue,
+          ),
+          CustomHeader(
+              text: 'Upload Image',
+              onTap: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              }),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.08,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.9,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                  color: AppColors.whiteshade,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(32),
+                      topRight: Radius.circular(32))),
+              child: SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 200,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      margin: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.09),
+                      child: Image.file(widget.uploadData.imageFile!),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomFormField(
+                      headingText: "Id Number",
+                      hintText: "idnumber",
+                      obsecureText: false,
+                      suffixIcon: const SizedBox(),
+                      maxLines: 1,
+                      textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.text,
+                      controller: _idNumber,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomFormField(
+                      headingText: "User Name",
+                      hintText: "username",
+                      obsecureText: false,
+                      suffixIcon: const SizedBox(),
+                      maxLines: 1,
+                      textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.text,
+                      controller: _name,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomFormField(
+                      headingText: "Surname",
+                      hintText: "surname",
+                      obsecureText: false,
+                      suffixIcon: const SizedBox(),
+                      maxLines: 1,
+                      textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.text,
+                      controller: _surname,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomFormField(
+                      headingText: "Gender",
+                      hintText: "gender",
+                      obsecureText: false,
+                      suffixIcon: const SizedBox(),
+                      maxLines: 1,
+                      textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.text,
+                      controller: _gender,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomFormField(
+                      headingText: "Birth Date",
+                      hintText: "birthdate",
+                      obsecureText: false,
+                      suffixIcon: const SizedBox(),
+                      maxLines: 1,
+                      textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.text,
+                      controller: _birthDate,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    AuthButton(
+                      onTap: () {
+                        ekle(selectedImage!, map);
+                      },
+                      text: 'Save',
+                    ),
+                    CustomRichText(
+                      discription: 'Already Have an account? ',
+                      text: 'Log In here',
+                      onTap: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()));
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      )),
+
+
+
+      ListView.builder(
+            itemCount: 3,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: const Icon(Icons.list),
+                trailing: const Text(
+                  "GFG",
+                  style: TextStyle(color: Colors.green, fontSize: 15),
+                ),
+                title: Text("List item $index"),
+                subtitle: Text("list subb"),
+              );
+            }));
+
+
+            values.forEach((key, value) {
+      print(value["surname"]);
+    });
+
+
+
+    showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Warning'),
+                              content: Text('Fotokopiiii!!!!'),
+                              actions: [
+                                TextButton(
+                                  child: Text('OK'),
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pop(); // Close the dialog
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+class TextPage extends StatefulWidget {
+  const TextPage({super.key});
+
+  @override
+  State<TextPage> createState() => _TextPageState();
+}
+
+class _TextPageState extends State<TextPage> {
+  String name = "deney";
+  String final_response = "gelmedi";
+  String code = "";
+
+  getData() async {
+    try {
+      http.Response response = await http.Client()
+          .post(Uri.parse("http://10.0.2.2:5000/name"), body: {
+        "name": name,
+      });
+      // final response = await http.post(Uri.parse("http://10.0.2.2/name"),body: json.encode({'name': name}));
+      // ignore: avoid_print
+      print(jsonDecode(response.body));
+    } catch (e) {
+      print(e.toString() + " sonucu: " + code);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Text Post"),
+      ),
+      body: Center(
+        child: Column(children: [
+          TextField(
+            decoration: const InputDecoration(labelText: "input data"),
+            onChanged: (value) => name = value,
+          ),
+          FloatingActionButton(
+            onPressed: getData,
+            child: const Text("POST"),
+          ),
+          Text(
+            final_response,
+            style: const TextStyle(fontSize: 24),
+          )
+        ]),
+      ),
+    );
+  }
+}
